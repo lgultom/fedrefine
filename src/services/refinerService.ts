@@ -6,7 +6,7 @@ const STORAGE_HISTORY_KEY = 'fedrefine_history_v1';
 
 export const getStoredWebhookUrl = (): string => {
   if (typeof window === 'undefined') return '';
-  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'https://n8n.microtoolsuite.com/webhook/refine';
+  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'http://localhost:5678/webhook/fedrefine-process';
 };
 
 export const setStoredWebhookUrl = (url: string) => {
@@ -137,20 +137,20 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
 
   // Derive CCAR components
   const context = `Serving as ${role} (${gs}) within a high-tempo operational environment`;
-  const challenge = raw.length > 30 
-    ? `Tasked with addressing operational bottlenecks and bridging compliance gaps in legacy workflows` 
+  const challenge = raw.length > 30
+    ? `Tasked with addressing operational bottlenecks and bridging compliance gaps in legacy workflows`
     : `Facing fragmented procedures, resource constraints, and rigorous statutory oversight deadlines`;
-  
+
   const actionPrefix = POWER_VERBS[Math.floor(Math.random() * POWER_VERBS.length)];
   const actionText = raw.replace(/^(i helped|i worked on|i managed|i was responsible for|helped|worked|did)\s+/i, '');
-  
+
   const cleanedAction = actionText.charAt(0).toLowerCase() + actionText.slice(1);
 
   // CCAR Variations
   const var1Text = `${actionPrefix} cross-functional initiatives to ${cleanedAction}; instituted standard operating controls, enforced OPM/NIST regulatory adherence, and synchronized stakeholders across multiple directorates, resulting in zero non-compliance findings and a measurable 28% gain in cycle efficiency.`;
-  
+
   const var2Text = `Architected and executed enterprise-grade milestones targeting: "${cleanedAction}"; established structured internal controls and quantitative benchmarks that eliminated operational backlog by 35% and conserved approximately $140K in annual administrative expenditures.`;
-  
+
   const var3Text = `Directed comprehensive end-to-end resolution of critical requirements by leading efforts to ${cleanedAction}; briefed senior leadership on technical risk matrices, conducted tailored workforce enablement, and achieved 100% audit readiness ahead of statutory fiscal deadlines.`;
 
   const bullets: BulletVariation[] = [
@@ -259,11 +259,8 @@ export async function refineFederalBullet(
           Accept: 'application/json'
         },
         body: JSON.stringify({
-          rawExperience: req.rawExperience,
-          targetPosition: req.targetPosition,
-          targetGS: req.targetGS,
-          agencyOrSeries: req.agencyOrSeries,
-          timestamp: new Date().toISOString()
+          jobTitle: req.targetPosition || 'Federal Position',
+          draftText: req.rawExperience
         })
       });
 
@@ -273,8 +270,11 @@ export async function refineFederalBullet(
 
       const data = await response.json();
 
-      // Check if data contains expected fields or adapt
+      // Handle various response formats from n8n webhook
+      // Expected format: { federalBullets: string[] | BulletVariation[], keySkillsHighlighted?: string[], strengthScore?: number, improvementNote?: string, opmCompetencies?: string[], scoreBreakdown?: {...} }
       let bullets: BulletVariation[] = [];
+
+      // Support multiple response formats
       if (Array.isArray(data.federalBullets)) {
         bullets = data.federalBullets.map((b: any, idx: number) => {
           if (typeof b === 'string') {
@@ -291,10 +291,34 @@ export async function refineFederalBullet(
             ccarBreakdown: b.ccarBreakdown
           };
         });
+      } else if (Array.isArray(data.bullets)) {
+        // Alternative format: { bullets: [...] }
+        bullets = data.bullets.map((b: any, idx: number) => {
+          if (typeof b === 'string') {
+            return {
+              id: `webhook-bullet-${idx}`,
+              style: (idx === 0 ? 'OPM Leadership & CCAR' : idx === 1 ? 'Quantified Impact (Executive)' : 'Technical & Execution') as any,
+              text: b
+            };
+          }
+          return {
+            id: b.id || `webhook-bullet-${idx}`,
+            style: b.style || 'OPM Leadership & CCAR',
+            text: b.text || String(b),
+            ccarBreakdown: b.ccarBreakdown
+          };
+        });
+      } else if (typeof data === 'string') {
+        // Single string response
+        bullets = [{
+          id: 'webhook-bullet-0',
+          style: 'OPM Leadership & CCAR',
+          text: data
+        }];
       }
 
       if (bullets.length === 0) {
-        throw new Error('Webhook response missing "federalBullets" array');
+        throw new Error('Webhook response missing "federalBullets" or "bullets" array');
       }
 
       const parsed: RefinementResult = {

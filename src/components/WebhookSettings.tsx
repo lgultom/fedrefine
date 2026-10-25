@@ -111,14 +111,14 @@ export const WebhookSettings: React.FC<WebhookSettingsProps> = ({ open, onOpenCh
             n8n Webhook URL (optional)
           </Label>
           <Input
-            placeholder="https://n8n.microtoolsuite.com/webhook/refine"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="bg-slate-800/70 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-          />
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Leave empty to use the default MicroToolSuite n8n endpoint. Your URL is saved locally so it persists across sessions.
-          </p>
+                      placeholder="http://localhost:5678/webhook/fedrefine-process"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      className="bg-slate-800/70 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    />
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      Leave empty to use the default n8n production webhook. Your URL is saved locally so it persists across sessions.
+                    </p>
         </div>
 
         <Separator className="my-4" />
