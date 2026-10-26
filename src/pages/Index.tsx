@@ -6,6 +6,7 @@ import { RefinementWorkspace } from '../components/RefinementWorkspace';
 import { CCARGuideModal } from '../components/CCARGuideModal';
 import { WebhookSettings } from '../components/WebhookSettings';
 import { HistoryPanel } from '../components/HistoryPanel';
+import { PricingModal } from '../components/PricingModal';
 import { refineFederalBullet } from '../services/refinerService';
 import type { GSLevel, RefinementResult } from '../types/refiner';
 
@@ -21,6 +22,7 @@ const Index: React.FC = () => {
   const [ccarOpen, setCCarOpen] = React.useState(false);
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [historyOpen, setHistoryOpen] = React.useState(false);
+  const [pricingOpen, setPricingOpen] = React.useState(false);
 
   const handleRefine = async () => {
     if (rawExperience.trim().length < 10) return;
@@ -63,6 +65,7 @@ const Index: React.FC = () => {
       <Navbar
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenHistory={() => setHistoryOpen(true)}
+        onOpenPricing={() => setPricingOpen(true)}
       />
 
       <main className="flex-1">
@@ -123,6 +126,7 @@ const Index: React.FC = () => {
         </div>
       </footer>
 
+      <PricingModal open={pricingOpen} onOpenChange={setPricingOpen} />
       <CCARGuideModal open={ccarOpen} onOpenChange={setCCarOpen} />
       <WebhookSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
       <HistoryPanel
