@@ -4,9 +4,18 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Separator } from './ui/separator';
 import { Skeleton } from './ui/skeleton';
-import { Copy, Check, Loader2, Target, Lightbulb, ShieldCheck, Sparkles, AlertTriangle } from 'lucide-react';
+import {
+  Copy,
+  Check,
+  Loader2,
+  Target,
+  Lightbulb,
+  ShieldCheck,
+  Sparkles,
+  AlertTriangle,
+  Zap,
+} from 'lucide-react';
 import type { BulletVariation, GSLevel, RefinementResult } from '../types/refiner';
 
 interface RefinementWorkspaceProps {
@@ -21,6 +30,7 @@ interface RefinementWorkspaceProps {
   errorNotice: string | null;
   onRefine: () => void;
   onCopy: (text: string) => void;
+  onOpenPricing?: () => void;
 }
 
 const BULLET_STYLE_STYLES: Record<string, string> = {
@@ -95,6 +105,7 @@ export const RefinementWorkspace: React.FC<RefinementWorkspaceProps> = ({
   errorNotice,
   onRefine,
   onCopy,
+  onOpenPricing,
 }) => {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
 
@@ -185,7 +196,7 @@ export const RefinementWorkspace: React.FC<RefinementWorkspaceProps> = ({
 
       {/* RIGHT: OUTPUT */}
       <Card className="border-slate-700/80 bg-slate-900/60 backdrop-blur-xl">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex items-center gap-2">
             <span className="p-2 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
               <ShieldCheck className="w-5 h-5" />
@@ -197,6 +208,17 @@ export const RefinementWorkspace: React.FC<RefinementWorkspaceProps> = ({
               </CardDescription>
             </div>
           </div>
+          {onOpenPricing && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onOpenPricing}
+              className="text-xs text-blue-300 hover:text-white hover:bg-blue-950/40 border border-blue-500/30 h-7 px-2.5"
+            >
+              <Zap className="w-3 h-3 mr-1 text-amber-400" />
+              Pro Plans
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           {isLoading ? (
