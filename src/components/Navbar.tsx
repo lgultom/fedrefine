@@ -25,59 +25,57 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const navContent = (
-    <>
-      <div className="flex items-center gap-2">
-        <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-900/50">
-          <ShieldCheck className="w-5 h-5" />
-        </span>
-        <div className="flex flex-col leading-tight">
-          <span className="text-lg font-bold tracking-tight text-white">
-            MicroToolSuite
+      <>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-900/50">
+            <ShieldCheck className="w-5 h-5" />
           </span>
-          <span className="text-[10px] font-semibold tracking-widest text-blue-400 uppercase">
-            FedRefine
-          </span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-lg font-bold tracking-tight text-white">
+              MicroToolSuite
+            </span>
+            <span className="text-[10px] font-semibold tracking-widest text-blue-400 uppercase">
+              FedRefine
+            </span>
+          </div>
         </div>
-      </div>
-
-      <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <Link to="/" className="text-white hover:text-blue-300 transition-colors">
-          Refine
-        </Link>
-        <button
-          type="button"
-          onClick={onOpenPricing}
-          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
-        >
-          Pricing
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-        </button>
-        <a
-          href="https://microtoolsuite.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-slate-300 hover:text-blue-300 transition-colors"
-        >
-          MicroToolSuite
-        </a>
-      </nav>
-    </>
-  );
-
-  return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
-      <div className="container flex h-16 items-center justify-between">
-        {navContent}
-
-        <div className="hidden md:flex items-center gap-2">
-          {/* Pricing / Pro button */}
-          <Button
-            variant="outline"
-            size="sm"
+  
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+          <Link to="/" className="text-white hover:text-blue-300 transition-colors">
+            Refine
+          </Link>
+          <button
+            type="button"
             onClick={onOpenPricing}
-            className={`border-blue-500/40 text-blue-300 hover:text-white hover:bg-blue-950/50 transition-all ${
-              isPro ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-blue-950/30'
-            }`}
+            className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
+          >
+            Pricing
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+          </button>
+          <a
+            href="https://microtoolsuite.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-300 hover:text-blue-300 transition-colors"
+          >
+            MicroToolSuite
+          </a>
+        </nav>
+      </>
+    );
+  
+    return (
+      <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+        <div className="container flex h-16 items-center justify-between">
+          {navContent}
+  
+          <div className="hidden md:flex items-center gap-2">
+            {/* Pricing / Pro button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onOpenPricing}
+              className={`border-blue-500/40 text-blue-300 hover:text-white hover:bg-blue-950/50 transition-all ${isPro ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-blue-950/30'}`}
           >
             {isPro ? (
               <>
