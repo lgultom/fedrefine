@@ -20,6 +20,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     setIsPro(hasActiveLicense());
   }, []);
@@ -41,9 +48,21 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <Link to="/" className="text-white hover:text-blue-300 transition-colors">
+        <button
+          type="button"
+          onClick={() => scrollToSection('refine-section')}
+          className="text-white hover:text-blue-300 transition-colors"
+        >
           Refine
-        </Link>
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('history-section')}
+          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
+        >
+          History
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+        </button>
         <button
           type="button"
           onClick={onOpenPricing}
@@ -121,32 +140,52 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         <div className="flex md:hidden items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onOpenPricing}
-            className="border-blue-500/40 text-blue-300 bg-blue-950/40 text-xs px-2.5 h-8"
-          >
-            <Sparkles className="w-3.5 h-3.5 mr-1 text-blue-400" />
-            Pro
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onOpenHistory} className="text-slate-300 px-2">
-            <History className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onOpenSettings} className="text-slate-300 px-2">
-            <Settings className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-300 px-2">
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </Button>
-        </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => scrollToSection('refine-section')}
+                    className="border-blue-500/40 text-blue-300 bg-blue-950/40 text-xs px-2.5 h-8"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 mr-1 text-blue-400" />
+                    Pro
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => scrollToSection('history-section')} className="text-slate-300 px-2">
+                    <History className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={onOpenSettings} className="text-slate-300 px-2">
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-300 px-2">
+                    {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  </Button>
+                </div>
       </div>
 
       {mobileOpen && (
         <div className="md:hidden border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-xl px-4 py-4 space-y-3">
-          <Link to="/" className="block text-slate-200 hover:text-blue-300 transition-colors py-2">
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen(false);
+              scrollToSection('refine-section');
+            }}
+            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2"
+          >
             Refine
-          </Link>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen(false);
+              scrollToSection('history-section');
+            }}
+            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
+          >
+            <span>History</span>
+            <Badge className="bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px]">
+              $9.99+
+            </Badge>
+          </button>
           <button
             type="button"
             onClick={() => {

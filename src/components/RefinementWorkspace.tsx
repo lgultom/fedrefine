@@ -116,7 +116,7 @@ export const RefinementWorkspace: React.FC<RefinementWorkspaceProps> = ({
   };
 
   return (
-    <div id="refine-section" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
+    <div id="refine-section" className="grid lg:grid-cols-2 gap-6 scroll-mt-20">
       {/* LEFT: INPUT */}
       <Card className="border-slate-700/80 bg-slate-900/60 backdrop-blur-xl">
         <CardHeader>
