@@ -140,25 +140,25 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         <div className="flex md:hidden items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => scrollToSection('refine-section')}
-                    className="border-blue-500/40 text-blue-300 bg-blue-950/40 text-xs px-2.5 h-8"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 mr-1 text-blue-400" />
-                    Pro
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => scrollToSection('history-section')} className="text-slate-300 px-2">
-                    <History className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={onOpenSettings} className="text-slate-300 px-2">
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-300 px-2">
-                    {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                  </Button>
-                </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => scrollToSection('refine-section')}
+            className="border-blue-500/40 text-blue-300 bg-blue-950/40 text-xs px-2.5 h-8"
+          >
+            <Sparkles className="w-3.5 h-3.5 mr-1 text-blue-400" />
+            Pro
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => scrollToSection('history-section')} className="text-slate-300 px-2">
+            <History className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onOpenSettings} className="text-slate-300 px-2">
+            <Settings className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-300 px-2">
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
+        </div>
       </div>
 
       {mobileOpen && (
