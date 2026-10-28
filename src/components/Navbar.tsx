@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Menu, X, Sparkles, KeyRound } from 'lucide-react';
+import { ShieldCheck, Menu, X, Sparkles, KeyRound, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
@@ -105,12 +105,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </Button>
 
-          {/* Subtle Main Domain external link */}
-          <Button asChild size="sm" className="ml-2 bg-blue-600 hover:bg-blue-500 text-white">
-            <a href="https://microtoolsuite.com" target="_blank" rel="noopener noreferrer">
-              Main Domain
-            </a>
-          </Button>
+          {/* Explore Suite external link */}
+                    <Button asChild size="sm" className="ml-2 bg-blue-600 hover:bg-blue-500 text-white">
+                      <a href="https://microtoolsuite.com" target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                        Explore Suite
+                      </a>
+                    </Button>
         </div>
 
         <div className="flex md:hidden items-center gap-2">
@@ -169,9 +170,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="https://microtoolsuite.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-slate-200 hover:text-blue-300 transition-colors py-2"
+            className="block text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center gap-2"
           >
-            Main Domain
+            <ExternalLink className="w-4 h-4" />
+            Explore Suite
           </a>
           <Separator className="bg-slate-800" />
           <Button
