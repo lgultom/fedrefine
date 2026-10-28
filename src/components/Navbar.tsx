@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Settings, History, Menu, X, Sparkles, KeyRound } from 'lucide-react';
+import { ShieldCheck, Menu, X, Sparkles, KeyRound } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
@@ -33,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navContent = (
     <>
-      <div className="flex items-center gap-2">
+      <Link to="/" className="flex items-center gap-2 cursor-pointer">
         <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-900/50">
           <ShieldCheck className="w-5 h-5" />
         </span>
@@ -45,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             FedRefine
           </span>
         </div>
-      </div>
+      </Link>
 
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
         <button
@@ -65,20 +65,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
         <button
           type="button"
-          onClick={onOpenPricing}
+          onClick={onOpenSettings}
           className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
         >
-          Pricing
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+          Engine
+          <Badge className="ml-1 bg-blue-600/20 text-blue-300 border border-blue-500/40 font-mono text-[10px]">
+            BETA
+          </Badge>
         </button>
-        <a
-          href="https://microtoolsuite.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-slate-300 hover:text-blue-300 transition-colors"
-        >
-          MicroToolSuite
-        </a>
       </nav>
     </>
   );
@@ -89,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {navContent}
 
         <div className="hidden md:flex items-center gap-2">
-          {/* Pricing / Pro button */}
+          {/* Upgrade Pro CTA button */}
           <Button
             variant="outline"
             size="sm"
@@ -111,27 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onOpenHistory}
-            className="text-slate-300 hover:text-white hover:bg-slate-800/60"
-          >
-            <History className="w-4 h-4 mr-2" />
-            History
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onOpenSettings}
-            className="text-slate-300 hover:text-white hover:bg-slate-800/60"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Engine
-          </Button>
-          <Badge className="ml-2 bg-blue-600/20 text-blue-300 border border-blue-500/40 font-mono text-[10px]">
-            BETA
-          </Badge>
+          {/* Subtle Main Domain external link */}
           <Button asChild size="sm" className="ml-2 bg-blue-600 hover:bg-blue-500 text-white">
             <a href="https://microtoolsuite.com" target="_blank" rel="noopener noreferrer">
               Main Domain
@@ -143,17 +117,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => scrollToSection('refine-section')}
+            onClick={onOpenPricing}
             className="border-blue-500/40 text-blue-300 bg-blue-950/40 text-xs px-2.5 h-8"
           >
             <Sparkles className="w-3.5 h-3.5 mr-1 text-blue-400" />
-            Pro
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => scrollToSection('history-section')} className="text-slate-300 px-2">
-            <History className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onOpenSettings} className="text-slate-300 px-2">
-            <Settings className="w-4 h-4" />
+            {isPro ? 'Pro' : 'Upgrade Pro'}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setMobileOpen(!mobileOpen)} className="text-slate-300 px-2">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -163,6 +131,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {mobileOpen && (
         <div className="md:hidden border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-xl px-4 py-4 space-y-3">
+          <Link to="/" className="flex items-center gap-2 cursor-pointer">
+            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+              <ShieldCheck className="w-4 h-4" />
+            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm font-bold text-white">MicroToolSuite</span>
+              <span className="text-[10px] font-semibold text-blue-400 uppercase">FedRefine</span>
+            </div>
+          </Link>
+
           <button
             type="button"
             onClick={() => {
@@ -190,13 +168,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => {
               setMobileOpen(false);
-              onOpenPricing();
+              onOpenSettings();
             }}
             className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
           >
-            <span>Pricing & Pro Plans</span>
+            <span>Engine (BETA)</span>
             <Badge className="bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px]">
-              $9.99+
+              BETA
             </Badge>
           </button>
           <a
@@ -205,7 +183,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             rel="noopener noreferrer"
             className="block text-slate-200 hover:text-blue-300 transition-colors py-2"
           >
-            MicroToolSuite
+            Main Domain
           </a>
           <Separator className="bg-slate-800" />
           <Button
@@ -219,30 +197,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Sparkles className="w-4 h-4 mr-2 text-blue-400" />
             {isPro ? 'Manage Pro License' : 'Upgrade to Pro'}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setMobileOpen(false);
-              onOpenHistory();
-            }}
-            className="w-full border-slate-700 text-slate-200 hover:bg-slate-800/60"
-          >
-            <History className="w-4 h-4 mr-2" />
-            History
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setMobileOpen(false);
-              onOpenSettings();
-            }}
-            className="w-full border-slate-700 text-slate-200 hover:bg-slate-800/60"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Engine Settings
           </Button>
         </div>
       )}
