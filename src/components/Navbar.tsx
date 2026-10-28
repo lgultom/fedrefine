@@ -131,15 +131,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {mobileOpen && (
         <div className="md:hidden border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-xl px-4 py-4 space-y-3">
-          <Link to="/" className="flex items-center gap-2 cursor-pointer">
-            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-              <ShieldCheck className="w-4 h-4" />
-            </span>
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm font-bold text-white">MicroToolSuite</span>
-              <span className="text-[10px] font-semibold text-blue-400 uppercase">FedRefine</span>
-            </div>
-          </Link>
 
           <button
             type="button"
@@ -160,9 +151,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
           >
             <span>History</span>
-            <Badge className="bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px]">
-              $9.99+
-            </Badge>
           </button>
           <button
             type="button"
