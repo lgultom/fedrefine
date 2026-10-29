@@ -6,6 +6,7 @@ import { RefinementWorkspace } from '../components/RefinementWorkspace';
 import { CCARGuideModal } from '../components/CCARGuideModal';
 import { WebhookSettings } from '../components/WebhookSettings';
 import { HistoryPanel } from '../components/HistoryPanel';
+import { HowItWorks } from '../components/HowItWorks';
 import { PricingModal } from '../components/PricingModal';
 import { refineFederalBullet } from '../services/refinerService';
 import type { GSLevel, RefinementResult } from '../types/refiner';
@@ -92,6 +93,8 @@ const Index: React.FC = () => {
             onCopy={handleCopy}
           />
         </section>
+
+        <HowItWorks />
 
         <section className="container py-12 md:py-16">
           <HistoryPanel
