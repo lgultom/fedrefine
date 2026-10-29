@@ -194,4 +194,3 @@ export const HowItWorks: React.FC = () => {
   );
 };
 
-export { HowItWorks };
