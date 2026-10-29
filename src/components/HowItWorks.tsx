@@ -17,7 +17,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-const HowItWorks: React.FC = () => {
+export const HowItWorks: React.FC = () => {
   return (
     <section className="container py-12 md:py-16">
       <div className="text-center mb-8">
@@ -194,4 +194,4 @@ const HowItWorks: React.FC = () => {
   );
 };
 
-export default HowItWorks;
+export { HowItWorks };
