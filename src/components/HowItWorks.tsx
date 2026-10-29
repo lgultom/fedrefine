@@ -11,6 +11,7 @@ import {
   ClipboardList,
   Layers,
   ShieldCheck,
+  Sparkles,
   Target,
   Zap,
   KeyRound,
