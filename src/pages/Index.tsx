@@ -92,6 +92,14 @@ const Index: React.FC = () => {
             onCopy={handleCopy}
           />
         </section>
+
+        <section className="container py-12 md:py-16">
+          <HistoryPanel
+            open={historyOpen}
+            onOpenChange={setHistoryOpen}
+            onSelect={handleHistorySelect}
+          />
+        </section>
       </main>
 
       <footer className="border-t border-slate-800/80 bg-slate-950/80">
@@ -129,11 +137,6 @@ const Index: React.FC = () => {
       <PricingModal open={pricingOpen} onOpenChange={setPricingOpen} />
       <CCARGuideModal open={ccarOpen} onOpenChange={setCCarOpen} />
       <WebhookSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
-      <HistoryPanel
-        open={historyOpen}
-        onOpenChange={setHistoryOpen}
-        onSelect={handleHistorySelect}
-      />
     </div>
   );
 };
