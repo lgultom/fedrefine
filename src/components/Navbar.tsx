@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Menu, X, Sparkles, KeyRound, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Menu, X, Sparkles, KeyRound, ExternalLink, HelpCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
@@ -72,6 +72,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Badge className="ml-1 bg-blue-600/20 text-blue-300 border border-blue-500/40 font-mono text-[10px]">
             BETA
           </Badge>
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('faq-section')}
+          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
+        >
+          FAQ
+          <HelpCircle className="w-3.5 h-3.5" />
         </button>
       </nav>
     </>
@@ -165,6 +173,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Badge className="bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px]">
               BETA
             </Badge>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen(false);
+              scrollToSection('faq-section');
+            }}
+            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
+          >
+            <span>FAQ</span>
+            <HelpCircle className="w-4 h-4" />
           </button>
           <a
             href="https://microtoolsuite.com"

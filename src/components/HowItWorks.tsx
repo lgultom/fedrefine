@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from './ui/accordion';
+import { Badge } from './ui/badge';
 import {
   ArrowRight,
   ClipboardList,
@@ -15,11 +16,14 @@ import {
   KeyRound,
   Copy,
   CheckCircle2,
+  Clock,
+  Check,
+  Infinity,
 } from 'lucide-react';
 
 export const HowItWorks: React.FC = () => {
   return (
-    <section className="container py-12 md:py-16">
+    <section id="faq-section" className="container py-12 md:py-16 scroll-mt-20">
       <div className="text-center mb-8">
         <span className="text-xs font-semibold tracking-widest text-blue-400 uppercase px-3 py-1 inline-flex items-center gap-2 bg-blue-950/40 border border-blue-500/30 rounded-full">
           <Layers className="w-3 h-3" />
@@ -185,6 +189,121 @@ export const HowItWorks: React.FC = () => {
                 <KeyRound className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
                 Your license key is stored securely in browser localStorage. You
                 can also find it in your Gumroad receipt or library.
+              </p>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Pricing Plans */}
+        <AccordionItem value="pricing-plans" className="border-slate-700/60">
+          <AccordionTrigger className="hover:bg-slate-800/60 rounded-lg px-4 py-3 text-left transition-colors">
+            <div className="flex items-center gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md shadow-emerald-900/30">
+                $
+              </span>
+              <span className="font-semibold text-white">What are the pricing plans and investment?</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-4 pb-4 pt-0">
+            <div className="space-y-3 text-sm text-slate-300">
+              <p className="font-medium text-white">Choose the plan that fits your federal job search:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Card 1: 7-Day Pass */}
+                <div className="rounded-2xl border border-slate-700/80 bg-slate-800/60 p-5 flex flex-col justify-between hover:border-slate-600 transition-all">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge variant="outline" className="border-slate-600 text-slate-300 bg-slate-900/60 font-mono text-xs">
+                        <Clock className="w-3 h-3 mr-1" /> 7-DAY ACCESS
+                      </Badge>
+                      <span className="text-xs text-slate-400">One-time pass</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-1">7-Day Unlimited Pass</h3>
+                    <p className="text-xs text-slate-400 mb-4">
+                      Ideal for polishing a single federal resume before a deadline.
+                    </p>
+                    <div className="flex items-baseline gap-1.5 mb-5">
+                      <span className="text-3xl font-extrabold text-white">$9.99</span>
+                      <span className="text-xs text-slate-400">/ 7 days</span>
+                    </div>
+                    <ul className="space-y-2 text-xs text-slate-300 mb-6">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Unlimited CCAR bullet generations for 7 days</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>All GS Grade levels (GS-07 through SES)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>OPM Strength Scoring & keyword analysis</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <a
+                    className="gumroad-button w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm bg-slate-700 hover:bg-slate-600 text-white shadow-md transition-all text-center"
+                    href="https://leontomz.gumroad.com/l/fedrefine-7day-pass?wanted=true"
+                    data-gumroad-single-product="true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    Get 7-Day Pass ($9.99)
+                  </a>
+                </div>
+
+                {/* Card 2: Pro Monthly */}
+                <div className="rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-b from-emerald-950/40 via-slate-800/80 to-slate-900/90 p-5 flex flex-col justify-between shadow-xl shadow-emerald-950/50">
+                  <div className="absolute -top-3 right-5">
+                    <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold text-[11px] px-2.5 py-0.5 shadow-md">
+                      BEST VALUE
+                    </Badge>
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge variant="outline" className="border-emerald-400/40 text-emerald-300 bg-emerald-950/60 font-mono text-xs">
+                        <Infinity className="w-3 h-3 mr-1" /> UNLIMITED PRO
+                      </Badge>
+                      <span className="text-xs text-emerald-300 font-medium">Billed monthly</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-1">Pro Monthly Membership</h3>
+                    <p className="text-xs text-emerald-300 mb-4">
+                      Unlimited continuous access for active job hunters applying to multiple GS series.
+                    </p>
+                    <div className="flex items-baseline gap-1.5 mb-5">
+                      <span className="text-3xl font-extrabold text-white">$19.99</span>
+                      <span className="text-xs text-slate-400">/ month</span>
+                    </div>
+                    <ul className="space-y-2 text-xs text-slate-200 mb-6">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span className="font-medium text-white">Continuous unlimited refinements</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Custom n8n Webhook server processing option</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Executive SES & Director level tailoring</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <a
+                    className="gumroad-button w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-900/40 transition-all text-center"
+                    href="https://leontomz.gumroad.com/l/fedrefine-pro-monthly?wanted=true"
+                    data-gumroad-single-product="true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Sparkles className="w-4 h-4 text-white" />
+                    Subscribe Pro ($19.99/mo)
+                  </a>
+                </div>
+              </div>
+              <p className="flex items-start gap-2 text-slate-400 text-xs mt-2">
+                <KeyRound className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-400" />
+                Every purchase includes an <strong className="text-white">instant Gumroad License Key</strong> delivered to your email.
               </p>
             </div>
           </AccordionContent>
