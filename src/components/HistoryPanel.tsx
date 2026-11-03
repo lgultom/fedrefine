@@ -29,11 +29,21 @@ interface HistoryPanelProps {
 export const HistoryPanel: React.FC<HistoryPanelProps> = ({ open, onOpenChange, onSelect }) => {
   const [items, setItems] = React.useState<RefinementResult[]>([]);
 
+  // Load history on mount and when open changes
   React.useEffect(() => {
-    if (open) {
-      setItems(getHistory());
-    }
-  }, [open]);
+    setItems(getHistory());
+  }, []);
+
+  // Listen for storage changes from other tabs/windows
+  React.useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'fedrefine_history_v1') {
+        setItems(getHistory());
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleClear = () => {
     clearHistory();

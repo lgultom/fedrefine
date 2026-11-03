@@ -6,7 +6,7 @@ const STORAGE_HISTORY_KEY = 'fedrefine_history_v1';
 
 export const getStoredWebhookUrl = (): string => {
   if (typeof window === 'undefined') return '';
-  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'http://localhost:5678/webhook/fedrefine-process';
+  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'https://api.microtoolsuite.com/webhook/fedrefine-process';
 };
 
 export const setStoredWebhookUrl = (url: string) => {
@@ -259,8 +259,9 @@ export async function refineFederalBullet(
           Accept: 'application/json'
         },
         body: JSON.stringify({
-          jobTitle: req.targetPosition || 'Federal Position',
-          draftText: req.rawExperience
+          target_job_title: req.targetPosition || 'Federal Position',
+          target_gs_level: req.targetGS || 'GS-13',
+          raw_bullet_point: req.rawExperience
         })
       });
 

@@ -61,6 +61,13 @@ const Index: React.FC = () => {
     setHistoryOpen(false);
   };
 
+  // Auto-open History panel on mount so users see previous generations
+  React.useEffect(() => {
+    if (!historyOpen) {
+      setHistoryOpen(true);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <Navbar
