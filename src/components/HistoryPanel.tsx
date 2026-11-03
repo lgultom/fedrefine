@@ -87,16 +87,16 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ open, onOpenChange, 
             </div>
             <div className="flex gap-1.5">
               <Button variant="ghost" size="sm" onClick={copyAll} title="Copy raw inputs">
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3.5 h-3.5 text-slate-300" />
               </Button>
               <Button variant="ghost" size="sm" onClick={() => handleExport('txt')} title="Export TXT">
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-slate-300" />
               </Button>
               <Button variant="ghost" size="sm" onClick={() => handleExport('json')} title="Export JSON">
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3.5 h-3.5 text-slate-300" />
               </Button>
               <Button variant="ghost" size="sm" onClick={handleClear} title="Clear history">
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3.5 h-3.5 text-slate-300" />
               </Button>
             </div>
           </div>
