@@ -25,6 +25,9 @@ const Index: React.FC = () => {
   const [historyOpen, setHistoryOpen] = React.useState(false);
   const [pricingOpen, setPricingOpen] = React.useState(false);
 
+  // History sync counter: increment to trigger HistoryPanel re-fetch from localStorage
+  const [historyTick, setHistoryTick] = React.useState(0);
+
   const handleRefine = async () => {
     if (rawExperience.trim().length < 10) return;
     setIsLoading(true);
@@ -42,6 +45,8 @@ const Index: React.FC = () => {
       if (response.errorNotice) {
         setErrorNotice(response.errorNotice);
       }
+      // Increment tick to trigger HistoryPanel re-fetch from localStorage
+      setHistoryTick((t) => t + 1);
     } catch (err: any) {
       setErrorNotice(err.message || 'Refinement failed. Please try again.');
     } finally {
@@ -108,6 +113,7 @@ const Index: React.FC = () => {
             open={historyOpen}
             onOpenChange={setHistoryOpen}
             onSelect={handleHistorySelect}
+            onHistoryUpdate={historyTick}
           />
         </section>
       </main>

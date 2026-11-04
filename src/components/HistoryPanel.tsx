@@ -24,15 +24,21 @@ interface HistoryPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect?: (item: RefinementResult) => void;
+  onHistoryUpdate?: number;
 }
 
-export const HistoryPanel: React.FC<HistoryPanelProps> = ({ open, onOpenChange, onSelect }) => {
+export const HistoryPanel: React.FC<HistoryPanelProps> = ({
+  open,
+  onOpenChange,
+  onSelect,
+  onHistoryUpdate,
+}) => {
   const [items, setItems] = React.useState<RefinementResult[]>([]);
 
-  // Load history on mount and when open changes
+  // Load history on mount, when open changes, or when history updates
   React.useEffect(() => {
     setItems(getHistory());
-  }, []);
+  }, [open, onHistoryUpdate]);
 
   // Listen for storage changes from other tabs/windows
   React.useEffect(() => {
@@ -87,16 +93,16 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ open, onOpenChange, 
             </div>
             <div className="flex gap-1.5">
               <Button variant="ghost" size="sm" onClick={copyAll} title="Copy raw inputs">
-                <Copy className="w-3.5 h-3.5 text-slate-300" />
+                <Copy className="w-3.5 h-3.5 text-slate-300 hover:text-white transition-colors" />
               </Button>
               <Button variant="ghost" size="sm" onClick={() => handleExport('txt')} title="Export TXT">
-                <Download className="w-3.5 h-3.5 text-slate-300" />
+                <Download className="w-3.5 h-3.5 text-slate-300 hover:text-white transition-colors" />
               </Button>
               <Button variant="ghost" size="sm" onClick={() => handleExport('json')} title="Export JSON">
-                <Download className="w-3.5 h-3.5 text-slate-300" />
+                <Download className="w-3.5 h-3.5 text-slate-300 hover:text-white transition-colors" />
               </Button>
               <Button variant="ghost" size="sm" onClick={handleClear} title="Clear history">
-                <Trash2 className="w-3.5 h-3.5 text-slate-300" />
+                <Trash2 className="w-3.5 h-3.5 text-slate-300 hover:text-white transition-colors" />
               </Button>
             </div>
           </div>
@@ -145,7 +151,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ open, onOpenChange, 
                       className="h-6 px-2 text-xs text-slate-400 hover:text-white hover:bg-slate-700/60"
                       onClick={() => onSelect?.(item)}
                     >
-                      <ChevronRight className="w-3 h-3" />
+                      <ChevronRight className="w-3 h-3 text-slate-300 hover:text-white transition-colors" />
                     </Button>
                   </div>
                 </div>
