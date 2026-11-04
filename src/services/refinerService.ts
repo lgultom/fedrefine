@@ -11,7 +11,11 @@ export const getStoredWebhookUrl = (): string => {
 
 export const setStoredWebhookUrl = (url: string) => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(STORAGE_WEBHOOK_KEY, url);
+    try {
+      localStorage.setItem(STORAGE_WEBHOOK_KEY, url);
+    } catch (e) {
+      console.error('Failed to save webhook URL', e);
+    }
   }
 };
 
@@ -23,7 +27,11 @@ export const getStoredEngineMode = (): 'simulator' | 'webhook' => {
 
 export const setStoredEngineMode = (mode: 'simulator' | 'webhook') => {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(STORAGE_ENGINE_MODE_KEY, mode);
+    try {
+      localStorage.setItem(STORAGE_ENGINE_MODE_KEY, mode);
+    } catch (e) {
+      console.error('Failed to save engine mode', e);
+    }
   }
 };
 
@@ -51,7 +59,11 @@ export const saveHistoryItem = (item: RefinementResult) => {
 
 export const clearHistory = () => {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem(STORAGE_HISTORY_KEY);
+    try {
+      localStorage.removeItem(STORAGE_HISTORY_KEY);
+    } catch (e) {
+      console.error('Failed to clear history', e);
+    }
   }
 };
 

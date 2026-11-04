@@ -36,20 +36,44 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
   const [items, setItems] = React.useState<RefinementResult[]>([]);
 
   // Load history on mount, when open changes, or when history updates
-  React.useEffect(() => {
-    setItems(getHistory());
-  }, [open, onHistoryUpdate]);
-
-  // Listen for storage changes from other tabs/windows
-  React.useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'fedrefine_history_v1') {
-        setItems(getHistory());
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    React.useEffect(() => {
+      const loadHistory = () => {
+        try {
+          setItems(getHistory());
+        } catch (e) {
+          console.error('Failed to load history', e);
+        }
+      };
+      loadHistory();
+    }, [open, onHistoryUpdate]);
+  
+    // Listen for storage changes from other tabs/windows
+    React.useEffect(() => {
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'fedrefine_history_v1') {
+          try {
+            setItems(getHistory());
+          } catch (e) {
+            console.error('Failed to load history from storage event', e);
+          }
+        }
+      };
+      window.addEventListener('storage', handleStorageChange);
+      return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+  
+    // Additional reload on window focus for mobile browser compatibility
+    React.useEffect(() => {
+      const handleFocus = () => {
+        try {
+          setItems(getHistory());
+        } catch (e) {
+          console.error('Failed to reload history on focus', e);
+        }
+      };
+      window.addEventListener('focus', handleFocus);
+      return () => window.removeEventListener('focus', handleFocus);
+    }, []);
 
   const handleClear = () => {
     clearHistory();
