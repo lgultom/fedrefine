@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Menu, X, Sparkles, KeyRound, ExternalLink, HelpCircle } from 'lucide-react';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { hasActiveLicense } from '../services/licenseService';
 
 interface NavbarProps {
-  onOpenSettings: () => void;
   onOpenHistory: () => void;
   onOpenPricing: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  onOpenSettings,
   onOpenHistory,
   onOpenPricing,
 }) => {
@@ -48,40 +45,30 @@ export const Navbar: React.FC<NavbarProps> = ({
       </Link>
 
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <button
-          type="button"
-          onClick={() => scrollToSection('refine-section')}
-          className="text-white hover:text-blue-300 transition-colors"
-        >
-          Refine
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSection('history-section')}
-          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
-        >
-          History
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-        </button>
-        <button
-          type="button"
-          onClick={onOpenSettings}
-          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
-        >
-          Engine
-          <Badge className="ml-1 bg-blue-600/20 text-blue-300 border border-blue-500/40 font-mono text-[10px]">
-            BETA
-          </Badge>
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSection('faq-section')}
-          className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
-        >
-          FAQ
-          <HelpCircle className="w-3.5 h-3.5" />
-        </button>
-      </nav>
+              <button
+                type="button"
+                onClick={() => scrollToSection('refine-section')}
+                className="text-white hover:text-blue-300 transition-colors"
+              >
+                Refine
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection('history-section')}
+                className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
+              >
+                History
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection('faq-section')}
+                className="text-slate-300 hover:text-blue-300 transition-colors flex items-center gap-1.5"
+              >
+                FAQ
+                <HelpCircle className="w-3.5 h-3.5" />
+              </button>
+            </nav>
     </>
   );
 
@@ -152,39 +139,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             Refine
           </button>
           <button
-            type="button"
-            onClick={() => {
-              setMobileOpen(false);
-              scrollToSection('history-section');
-            }}
-            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
-          >
-            <span>History</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMobileOpen(false);
-              onOpenSettings();
-            }}
-            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
-          >
-            <span>Engine (BETA)</span>
-            <Badge className="bg-blue-600/30 text-blue-300 border border-blue-500/40 text-[10px]">
-              BETA
-            </Badge>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMobileOpen(false);
-              scrollToSection('faq-section');
-            }}
-            className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
-          >
-            <span>FAQ</span>
-            <HelpCircle className="w-4 h-4" />
-          </button>
+                      type="button"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        scrollToSection('history-section');
+                      }}
+                      className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
+                    >
+                      <span>History</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileOpen(false);
+                        scrollToSection('faq-section');
+                      }}
+                      className="w-full text-left text-slate-200 hover:text-blue-300 transition-colors py-2 flex items-center justify-between"
+                    >
+                      <span>FAQ</span>
+                      <HelpCircle className="w-4 h-4" />
+                    </button>
           <a
             href="https://microtoolsuite.com"
             target="_blank"
