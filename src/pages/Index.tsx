@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Hero } from '../components/Hero';
 import { RefinementWorkspace } from '../components/RefinementWorkspace';
 import { CCARGuideModal } from '../components/CCARGuideModal';
+import { WebhookSettings } from '../components/WebhookSettings';
 import { HistoryPanel } from '../components/HistoryPanel';
 import { HowItWorks } from '../components/HowItWorks';
 import { PricingModal } from '../components/PricingModal';
@@ -20,6 +21,7 @@ const Index: React.FC = () => {
 
   // Modals
   const [ccarOpen, setCCarOpen] = React.useState(false);
+  const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [historyOpen, setHistoryOpen] = React.useState(false);
   const [pricingOpen, setPricingOpen] = React.useState(false);
 
@@ -37,7 +39,7 @@ const Index: React.FC = () => {
           targetPosition: targetPosition.trim() || undefined,
           targetGS: targetGS,
         },
-        'webhook'
+        'simulator'
       );
       setResult(response.result);
       if (response.errorNotice) {
@@ -74,9 +76,10 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <Navbar
-              onOpenHistory={() => setHistoryOpen(true)}
-              onOpenPricing={() => setPricingOpen(true)}
-            />
+        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenHistory={() => setHistoryOpen(true)}
+        onOpenPricing={() => setPricingOpen(true)}
+      />
 
       <main className="flex-1">
         <Hero
@@ -148,9 +151,10 @@ const Index: React.FC = () => {
       </footer>
 
       <PricingModal open={pricingOpen} onOpenChange={setPricingOpen} />
-            <CCARGuideModal open={ccarOpen} onOpenChange={setCCarOpen} />
-          </div>
-        );
+      <CCARGuideModal open={ccarOpen} onOpenChange={setCCarOpen} />
+      <WebhookSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
+    </div>
+  );
 };
 
 export default Index;

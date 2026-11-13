@@ -4,11 +4,9 @@ const STORAGE_WEBHOOK_KEY = 'fedrefine_n8n_webhook_url';
 const STORAGE_ENGINE_MODE_KEY = 'fedrefine_engine_mode'; // 'simulator' | 'webhook'
 const STORAGE_HISTORY_KEY = 'fedrefine_history_v1';
 
-// Production n8n webhook endpoint (locked for production launch)
-const DEFAULT_WEBHOOK_URL = 'https://api.microtoolsuite.com/webhook/fedrefine-process';
-
 export const getStoredWebhookUrl = (): string => {
-  return DEFAULT_WEBHOOK_URL;
+  if (typeof window === 'undefined') return '';
+  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'https://api.microtoolsuite.com/webhook/fedrefine-process';
 };
 
 export const setStoredWebhookUrl = (url: string) => {
@@ -22,7 +20,9 @@ export const setStoredWebhookUrl = (url: string) => {
 };
 
 export const getStoredEngineMode = (): 'simulator' | 'webhook' => {
-  return 'webhook';
+  if (typeof window === 'undefined') return 'simulator';
+  const mode = localStorage.getItem(STORAGE_ENGINE_MODE_KEY);
+  return mode === 'webhook' ? 'webhook' : 'simulator';
 };
 
 export const setStoredEngineMode = (mode: 'simulator' | 'webhook') => {
