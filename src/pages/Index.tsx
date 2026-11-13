@@ -76,7 +76,6 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <Navbar
-        onOpenSettings={() => setSettingsOpen(true)}
         onOpenHistory={() => setHistoryOpen(true)}
         onOpenPricing={() => setPricingOpen(true)}
       />

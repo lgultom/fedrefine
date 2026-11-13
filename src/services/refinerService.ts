@@ -20,9 +20,9 @@ export const setStoredWebhookUrl = (url: string) => {
 };
 
 export const getStoredEngineMode = (): 'simulator' | 'webhook' => {
-  if (typeof window === 'undefined') return 'simulator';
+  if (typeof window === 'undefined') return 'webhook';
   const mode = localStorage.getItem(STORAGE_ENGINE_MODE_KEY);
-  return mode === 'webhook' ? 'webhook' : 'simulator';
+  return mode === 'webhook' ? 'webhook' : 'webhook';
 };
 
 export const setStoredEngineMode = (mode: 'simulator' | 'webhook') => {
