@@ -1,7 +1,7 @@
 import { BulletVariation, GSLevel, RefinementRequest, RefinementResult } from '../types/refiner';
 
 const STORAGE_WEBHOOK_KEY = 'fedrefine_n8n_webhook_url';
-const STORAGE_ENGINE_MODE_KEY = 'fedrefine_engine_mode'; // 'simulator' | 'webhook'
+const STORAGE_ENGINE_MODE_KEY = 'fedrefine_engine_mode';
 const STORAGE_HISTORY_KEY = 'fedrefine_history_v1';
 
 const PRODUCTION_WEBHOOK_URL = 'https://api.microtoolsuite.com/webhook/fedrefine-process';
@@ -274,9 +274,8 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
 }
 
 /**
- * Main Refine caller: sends POST to production n8n webhook with experience,
- * targetTitle, and targetLevel payload. Falls back to local simulation only
- * if the network request throws or returns a non-2xx response.
+ * Main Refine caller: sends POST to production n8n webhook with { experience, targetTitle, targetLevel }.
+ * Falls back to local simulation only if the request fails or returns a non-OK response.
  */
 export async function refineFederalBullet(
   req: RefinementRequest,
