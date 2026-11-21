@@ -67,6 +67,21 @@ export const clearHistory = () => {
   }
 };
 
+/**
+ * Standardizes bracketed percentage placeholders like [Y%] or [Z%] to [X%]
+ * for consistency across generated CCAR bullets.
+ */
+export function standardizePlaceholders(text: string): string {
+  return text.replace(/\[([A-WYZ])\s*%\]/gi, '[X%]');
+}
+
+/**
+ * Checks if any text contains bracketed placeholders like [X%], [Y users], etc.
+ */
+export function hasBracketPlaceholders(text: string): boolean {
+  return /\[[^\]]+\]/.test(text);
+}
+
 // Power action verbs recommended by OPM and Federal HR specialists
 const POWER_VERBS = [
   'Spearheaded',

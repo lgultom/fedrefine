@@ -28,6 +28,7 @@ export interface RefinementResult {
     actionVerbStrength: number; // 0-25
   };
   improvementNote: string;
+  placeholderWarning?: string;
   opmCompetencies: string[];
 }
 
