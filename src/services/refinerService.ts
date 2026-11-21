@@ -68,6 +68,14 @@ export const clearHistory = () => {
 };
 
 /**
+ * Strips trailing punctuation (.,;:!?) from raw input to prevent double punctuation
+ * like ".;" or ".." when inserted into fallback templates.
+ */
+export function stripTrailingPunctuation(text: string): string {
+  return text.replace(/[.,;:!?]+$/, '');
+}
+
+/**
  * Standardizes bracketed percentage placeholders like [Y%] or [Z%] to [X%]
  * for consistency across generated CCAR bullets.
  */
@@ -122,7 +130,7 @@ const OPM_COMPETENCIES = [
 export function generateSimulatedRefinement(req: RefinementRequest): RefinementResult {
   const gs = req.targetGS || 'GS-13';
   const role = req.targetPosition?.trim() || 'Federal Program Specialist';
-  const raw = req.rawExperience.trim();
+  const raw = stripTrailingPunctuation(req.rawExperience.trim());
 
   // Extract core concepts
   const hasNumbers = /\d+/.test(raw);
@@ -216,6 +224,13 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
     }
   ];
 
+  // Standardize bracketed percentage placeholders like [Y%] or [Z%] to [X%]
+  const standardizedBullets = bullets.map((b) => ({ ...b, text: standardizePlaceholders(b.text) }));
+  const hasPlaceholder = standardizedBullets.some((b) => hasBracketPlaceholders(b.text));
+  const placeholderWarning = hasPlaceholder
+    ? 'Placeholder Reminder: Replace bracketed items like [X%] with your actual verified metrics before submitting your resume.'
+    : undefined;
+
   // Calculate score breakdown
   const ccarStructure = Math.min(25, 20 + (raw.length > 50 ? 5 : 2));
   const opmKeywords = Math.min(25, 18 + Math.min(detectedKeywords.length * 2, 7));
@@ -241,7 +256,7 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
     rawInput: req.rawExperience,
     targetRole: role,
     targetGS: gs,
-    federalBullets: bullets,
+    federalBullets: standardizedBullets,
     keySkillsHighlighted: detectedKeywords.slice(0, 5),
     strengthScore: totalScore,
     scoreBreakdown: {
@@ -251,6 +266,7 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
       actionVerbStrength
     },
     improvementNote,
+    placeholderWarning,
     opmCompetencies: OPM_COMPETENCIES.slice(0, 4)
   };
 }
@@ -283,7 +299,8 @@ export async function refineFederalBullet(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json'
+          Accept: 'application/json',
+          'Origin': window.location.origin
         },
         body: JSON.stringify({
           target_job_title: req.targetPosition || 'Federal Position',
@@ -349,13 +366,20 @@ export async function refineFederalBullet(
         throw new Error('Webhook response missing "federalBullets" or "bullets" array');
       }
 
+      // Standardize placeholders in webhook bullets too
+      const standardizedBullets = bullets.map((b) => ({ ...b, text: standardizePlaceholders(b.text) }));
+      const hasPlaceholder = standardizedBullets.some((b) => hasBracketPlaceholders(b.text));
+      const placeholderWarning = hasPlaceholder
+        ? 'Placeholder Reminder: Replace bracketed items like [X%] with your actual verified metrics before submitting your resume.'
+        : undefined;
+
       const parsed: RefinementResult = {
         id: 'res-wh-' + Date.now(),
         timestamp: Date.now(),
         rawInput: req.rawExperience,
         targetRole: req.targetPosition || 'Federal Candidate',
         targetGS: req.targetGS || 'GS-13',
-        federalBullets: bullets,
+        federalBullets: standardizedBullets,
         keySkillsHighlighted: Array.isArray(data.keySkillsHighlighted)
           ? data.keySkillsHighlighted
           : ['OPM COMPLIANCE', 'FEDERAL EXECUTION'],
@@ -367,6 +391,7 @@ export async function refineFederalBullet(
           actionVerbStrength: 22
         },
         improvementNote: data.improvementNote || 'Generated via active n8n federal automation pipeline.',
+        placeholderWarning,
         opmCompetencies: Array.isArray(data.opmCompetencies)
           ? data.opmCompetencies
           : ['Strategic Thinking', 'Accountability', 'Problem Solving']
