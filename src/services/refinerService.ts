@@ -4,9 +4,11 @@ const STORAGE_WEBHOOK_KEY = 'fedrefine_n8n_webhook_url';
 const STORAGE_ENGINE_MODE_KEY = 'fedrefine_engine_mode'; // 'simulator' | 'webhook'
 const STORAGE_HISTORY_KEY = 'fedrefine_history_v1';
 
+const PRODUCTION_WEBHOOK_URL = 'https://api.microtoolsuite.com/webhook/fedrefine-process';
+
 export const getStoredWebhookUrl = (): string => {
   if (typeof window === 'undefined') return '';
-  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || 'https://api.microtoolsuite.com/webhook/fedrefine-process';
+  return localStorage.getItem(STORAGE_WEBHOOK_KEY) || PRODUCTION_WEBHOOK_URL;
 };
 
 export const setStoredWebhookUrl = (url: string) => {
@@ -272,8 +274,9 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
 }
 
 /**
- * Main Refine caller: attempts n8n Webhook if configured / enabled,
- * or gracefully runs the local simulated OPM engine.
+ * Main Refine caller: sends POST to production n8n webhook with experience,
+ * targetTitle, and targetLevel payload. Falls back to local simulation only
+ * if the network request throws or returns a non-2xx response.
  */
 export async function refineFederalBullet(
   req: RefinementRequest,
@@ -303,9 +306,9 @@ export async function refineFederalBullet(
           'Origin': window.location.origin
         },
         body: JSON.stringify({
-          target_job_title: req.targetPosition || 'Federal Position',
-          target_gs_level: req.targetGS || 'GS-13',
-          raw_bullet_point: req.rawExperience
+          experience: req.rawExperience,
+          targetTitle: req.targetPosition || 'Federal Position',
+          targetLevel: req.targetGS || 'GS-13'
         })
       });
 
