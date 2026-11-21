@@ -328,13 +328,15 @@ export const RefinementWorkspace: React.FC<RefinementWorkspaceProps> = ({
               <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30">
                 <div className="flex items-start gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
-                  <div>
+                  <div className="w-full">
                     <p className="text-xs font-semibold text-amber-300 mb-1">Improvement Tip</p>
                     <p className="text-xs text-slate-300 leading-relaxed">{result.improvementNote}</p>
                     {result.placeholderWarning && (
-                      <div className="mt-2 flex items-start gap-2 p-2 rounded-md bg-amber-500/10 border border-amber-500/30">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0" />
-                        <p className="text-xs text-amber-200 leading-relaxed">{result.placeholderWarning}</p>
+                      <div className="mt-3 w-full p-3 rounded-md bg-amber-500/10 border border-amber-500/30">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                          <p className="text-xs text-amber-200 leading-relaxed">{result.placeholderWarning}</p>
+                        </div>
                       </div>
                     )}
                   </div>
