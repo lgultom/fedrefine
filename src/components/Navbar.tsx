@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Menu, X, Sparkles, KeyRound, ExternalLink, HelpCircle } from 'lucide-react';
+import { Menu, X, Sparkles, KeyRound, ExternalLink, HelpCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { hasActiveLicense } from '../services/licenseService';
@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     <>
       <Link to="/" className="flex items-center gap-2 cursor-pointer">
         <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-900/50">
-          <ShieldCheck className="w-5 h-5" />
+          <img src="/favicon-fedrefine.png" alt="FedRefine" className="w-6 h-6 object-contain" />
         </span>
         <div className="flex flex-col leading-tight">
           <span className="text-lg font-bold tracking-tight text-white">
