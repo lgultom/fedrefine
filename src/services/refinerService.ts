@@ -128,6 +128,7 @@ const OPM_COMPETENCIES = [
 
 /**
  * Intelligent OPM CCAR Generator (Built-in AI Simulation Engine)
+ * Used as fallback when webhook fails or returns non-2xx response.
  */
 export function generateSimulatedRefinement(req: RefinementRequest): RefinementResult {
   const gs = req.targetGS || 'GS-13';
@@ -274,148 +275,134 @@ export function generateSimulatedRefinement(req: RefinementRequest): RefinementR
 }
 
 /**
- * Main Refine caller: sends POST to production n8n webhook with { experience, targetTitle, targetLevel }.
- * Falls back to local simulation only if the request fails or returns a non-OK response.
+ * Main Refine caller: ALWAYS executes a real fetch to the production n8n webhook
+ * first. Only uses local fallback inside the catch block if fetch throws an error
+ * or returns a non-OK response.
  */
 export async function refineFederalBullet(
   req: RefinementRequest,
   mode: 'simulator' | 'webhook',
   customWebhookUrl?: string
 ): Promise<{ result: RefinementResult; source: 'webhook' | 'simulator'; errorNotice?: string }> {
-  // If webhook mode is chosen:
-  if (mode === 'webhook') {
-    const url = customWebhookUrl || getStoredWebhookUrl();
-    if (!url || !url.startsWith('http')) {
-      // Fallback with notice
-      const fallback = generateSimulatedRefinement(req);
-      saveHistoryItem(fallback);
-      return {
-        result: fallback,
-        source: 'simulator',
-        errorNotice: 'Webhook URL was invalid. Used simulated OPM engine instead.'
-      };
+  // Always execute real fetch to production webhook first
+  const url = customWebhookUrl || PRODUCTION_WEBHOOK_URL;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Origin': window.location.origin
+      },
+      body: JSON.stringify({
+        experience: req.rawExperience,
+        targetTitle: req.targetPosition || 'Federal Position',
+        targetLevel: req.targetGS || 'GS-13'
+      })
+    });
+
+    // If response is not OK, throw to trigger fallback
+    if (!response.ok) {
+      throw new Error(`Webhook responded with status ${response.status}`);
     }
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          'Origin': window.location.origin
-        },
-        body: JSON.stringify({
-          experience: req.rawExperience,
-          targetTitle: req.targetPosition || 'Federal Position',
-          targetLevel: req.targetGS || 'GS-13'
-        })
+    const data = await response.json();
+
+    // Handle various response formats from n8n webhook
+    let bullets: BulletVariation[] = [];
+
+    // Support multiple response formats
+    if (Array.isArray(data.federalBullets)) {
+      bullets = data.federalBullets.map((b: any, idx: number) => {
+        if (typeof b === 'string') {
+          return {
+            id: `webhook-bullet-${idx}`,
+            style: (idx === 0 ? 'OPM Leadership & CCAR' : idx === 1 ? 'Quantified Impact (Executive)' : 'Technical & Execution') as any,
+            text: b
+          };
+        }
+        return {
+          id: b.id || `webhook-bullet-${idx}`,
+          style: b.style || 'OPM Leadership & CCAR',
+          text: b.text || String(b),
+          ccarBreakdown: b.ccarBreakdown
+        };
       });
-
-      if (!response.ok) {
-        throw new Error(`Webhook responded with status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Handle various response formats from n8n webhook
-      // Expected format: { federalBullets: string[] | BulletVariation[], keySkillsHighlighted?: string[], strengthScore?: number, improvementNote?: string, opmCompetencies?: string[], scoreBreakdown?: {...} }
-      let bullets: BulletVariation[] = [];
-
-      // Support multiple response formats
-      if (Array.isArray(data.federalBullets)) {
-        bullets = data.federalBullets.map((b: any, idx: number) => {
-          if (typeof b === 'string') {
-            return {
-              id: `webhook-bullet-${idx}`,
-              style: (idx === 0 ? 'OPM Leadership & CCAR' : idx === 1 ? 'Quantified Impact (Executive)' : 'Technical & Execution') as any,
-              text: b
-            };
-          }
+    } else if (Array.isArray(data.bullets)) {
+      // Alternative format: { bullets: [...] }
+      bullets = data.bullets.map((b: any, idx: number) => {
+        if (typeof b === 'string') {
           return {
-            id: b.id || `webhook-bullet-${idx}`,
-            style: b.style || 'OPM Leadership & CCAR',
-            text: b.text || String(b),
-            ccarBreakdown: b.ccarBreakdown
+            id: `webhook-bullet-${idx}`,
+            style: (idx === 0 ? 'OPM Leadership & CCAR' : idx === 1 ? 'Quantified Impact (Executive)' : 'Technical & Execution') as any,
+            text: b
           };
-        });
-      } else if (Array.isArray(data.bullets)) {
-        // Alternative format: { bullets: [...] }
-        bullets = data.bullets.map((b: any, idx: number) => {
-          if (typeof b === 'string') {
-            return {
-              id: `webhook-bullet-${idx}`,
-              style: (idx === 0 ? 'OPM Leadership & CCAR' : idx === 1 ? 'Quantified Impact (Executive)' : 'Technical & Execution') as any,
-              text: b
-            };
-          }
-          return {
-            id: b.id || `webhook-bullet-${idx}`,
-            style: b.style || 'OPM Leadership & CCAR',
-            text: b.text || String(b),
-            ccarBreakdown: b.ccarBreakdown
-          };
-        });
-      } else if (typeof data === 'string') {
-        // Single string response
-        bullets = [{
-          id: 'webhook-bullet-0',
-          style: 'OPM Leadership & CCAR',
-          text: data
-        }];
-      }
-
-      if (bullets.length === 0) {
-        throw new Error('Webhook response missing "federalBullets" or "bullets" array');
-      }
-
-      // Standardize placeholders in webhook bullets too
-      const standardizedBullets = bullets.map((b) => ({ ...b, text: standardizePlaceholders(b.text) }));
-      const hasPlaceholder = standardizedBullets.some((b) => hasBracketPlaceholders(b.text));
-      const placeholderWarning = hasPlaceholder
-        ? 'Placeholder Reminder: Replace bracketed items like [X%] with your actual verified metrics before submitting your resume.'
-        : undefined;
-
-      const parsed: RefinementResult = {
-        id: 'res-wh-' + Date.now(),
-        timestamp: Date.now(),
-        rawInput: req.rawExperience,
-        targetRole: req.targetPosition || 'Federal Candidate',
-        targetGS: req.targetGS || 'GS-13',
-        federalBullets: standardizedBullets,
-        keySkillsHighlighted: Array.isArray(data.keySkillsHighlighted)
-          ? data.keySkillsHighlighted
-          : ['OPM COMPLIANCE', 'FEDERAL EXECUTION'],
-        strengthScore: typeof data.strengthScore === 'number' ? data.strengthScore : 92,
-        scoreBreakdown: data.scoreBreakdown || {
-          ccarStructure: 24,
-          opmKeywords: 23,
-          quantifiedMetrics: 23,
-          actionVerbStrength: 22
-        },
-        improvementNote: data.improvementNote || 'Generated via active n8n federal automation pipeline.',
-        placeholderWarning,
-        opmCompetencies: Array.isArray(data.opmCompetencies)
-          ? data.opmCompetencies
-          : ['Strategic Thinking', 'Accountability', 'Problem Solving']
-      };
-
-      saveHistoryItem(parsed);
-      return { result: parsed, source: 'webhook' };
-    } catch (err: any) {
-      console.warn('Webhook dispatch failed, falling back to local simulation:', err);
-      const simulated = generateSimulatedRefinement(req);
-      saveHistoryItem(simulated);
-      return {
-        result: simulated,
-        source: 'simulator',
-        errorNotice: `Webhook call failed (${err.message || 'Network error'}). Rendered via built-in OPM AI engine.`
-      };
+        }
+        return {
+          id: b.id || `webhook-bullet-${idx}`,
+          style: b.style || 'OPM Leadership & CCAR',
+          text: b.text || String(b),
+          ccarBreakdown: b.ccarBreakdown
+        };
+      });
+    } else if (typeof data === 'string') {
+      // Single string response
+      bullets = [{
+        id: 'webhook-bullet-0',
+        style: 'OPM Leadership & CCAR',
+        text: data
+      }];
     }
-  }
 
-  // Pure Simulator mode (simulate slight realistic 700ms latency for smooth UX feel)
-  await new Promise((resolve) => setTimeout(resolve, 600));
-  const sim = generateSimulatedRefinement(req);
-  saveHistoryItem(sim);
-  return { result: sim, source: 'simulator' };
+    if (bullets.length === 0) {
+      throw new Error('Webhook response missing "federalBullets" or "bullets" array');
+    }
+
+    // Standardize placeholders in webhook bullets
+    const standardizedBullets = bullets.map((b) => ({ ...b, text: standardizePlaceholders(b.text) }));
+    const hasPlaceholder = standardizedBullets.some((b) => hasBracketPlaceholders(b.text));
+    const placeholderWarning = hasPlaceholder
+      ? 'Placeholder Reminder: Replace bracketed items like [X%] with your actual verified metrics before submitting your resume.'
+      : undefined;
+
+    const parsed: RefinementResult = {
+      id: 'res-wh-' + Date.now(),
+      timestamp: Date.now(),
+      rawInput: req.rawExperience,
+      targetRole: req.targetPosition || 'Federal Candidate',
+      targetGS: req.targetGS || 'GS-13',
+      federalBullets: standardizedBullets,
+      keySkillsHighlighted: Array.isArray(data.keySkillsHighlighted)
+        ? data.keySkillsHighlighted
+        : ['OPM COMPLIANCE', 'FEDERAL EXECUTION'],
+      strengthScore: typeof data.strengthScore === 'number' ? data.strengthScore : 92,
+      scoreBreakdown: data.scoreBreakdown || {
+        ccarStructure: 24,
+        opmKeywords: 23,
+        quantifiedMetrics: 23,
+        actionVerbStrength: 22
+      },
+      improvementNote: data.improvementNote || 'Generated via active n8n federal automation pipeline.',
+      placeholderWarning,
+      opmCompetencies: Array.isArray(data.opmCompetencies)
+        ? data.opmCompetencies
+        : ['Strategic Thinking', 'Accountability', 'Problem Solving']
+    };
+
+    // Save to history
+    saveHistoryItem(parsed);
+    return { result: parsed, source: 'webhook' };
+
+  } catch (err: any) {
+    // Fallback to local simulation only if fetch throws or !response.ok
+    console.warn('Webhook dispatch failed, falling back to local simulation:', err);
+    const simulated = generateSimulatedRefinement(req);
+    saveHistoryItem(simulated);
+    return {
+      result: simulated,
+      source: 'simulator',
+      errorNotice: `Webhook call failed (${err.message || 'Network error'}). Rendered via built-in OPM AI engine.`
+    };
+  }
 }
